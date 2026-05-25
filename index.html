@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>卫生间适老化改造分析</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <!-- 头部 -->
+    <header class="header">
+      <h1>卫生间适老化改造分析</h1>
+      <p class="subtitle">上传卫生间照片，描述老人情况，获取专业改造方案与效果图</p>
+    </header>
+
+    <!-- 主体 -->
+    <main class="main">
+      <!-- 左栏：输入区 -->
+      <aside class="sidebar">
+        <!-- 图片上传 -->
+        <div class="card card-upload">
+          <h2 class="card-title">卫生间照片</h2>
+          <div class="upload-area" id="uploadArea">
+            <div class="upload-placeholder" id="uploadPlaceholder">
+              <svg class="upload-icon" viewBox="0 0 24 24" width="40" height="40">
+                <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+              </svg>
+              <p><span class="link">点击上传</span>或拖拽照片到此处</p>
+              <p class="text-hint">支持 JPG、PNG，不超过 10MB</p>
+            </div>
+            <img class="preview-img" id="previewImg" alt="">
+            <button class="btn-remove-img" id="btnRemove">&times;</button>
+          </div>
+          <input type="file" id="fileInput" accept="image/jpeg,image/png" hidden>
+        </div>
+
+        <!-- 老人情况 -->
+        <div class="card card-desc">
+          <h2 class="card-title">老人情况描述</h2>
+          <textarea id="descInput" placeholder="请描述老人的身体状况、生活习惯和居住情况……" rows="4"></textarea>
+          <p class="text-hint example-hint">例如：老人是否独居、是否坐轮椅、是否容易摔倒、是否夜间频繁如厕、是否需要护理人员协助。</p>
+
+          <div class="tag-group" id="tagGroup">
+            <button class="tag" data-text="独居">独居</button>
+            <button class="tag" data-text="坐轮椅">坐轮椅</button>
+            <button class="tag" data-text="膝盖不好">膝盖不好</button>
+            <button class="tag" data-text="夜间频繁如厕">夜间频繁如厕</button>
+            <button class="tag" data-text="认知障碍">认知障碍</button>
+            <button class="tag" data-text="需要护理协助">需要护理协助</button>
+          </div>
+        </div>
+
+        <!-- 提交按钮 -->
+        <button class="btn-submit" id="btnSubmit" disabled>
+          <span class="btn-text">开始分析</span>
+          <span class="btn-loading hidden"><span class="btn-spinner"></span>分析中…</span>
+        </button>
+      </aside>
+
+      <!-- 右栏：结果区 -->
+      <section class="result-area" id="resultArea">
+        <!-- 空状态 -->
+        <div class="result-empty" id="resultEmpty">
+          <svg viewBox="0 0 24 24" width="56" height="56"><path fill="currentColor" opacity=".15" d="M3 3h18v18H3z"/><path fill="currentColor" opacity=".4" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z"/></svg>
+          <p>上传照片并填写老人情况后<br>点击"开始分析"即可查看结果</p>
+        </div>
+
+        <!-- 结果内容（分析完成后显示） -->
+        <div class="result-content hidden" id="resultContent">
+          <!-- A. 风险总览 -->
+          <div class="card card-risk-overview">
+            <h2 class="card-title">风险总览</h2>
+            <div class="risk-stats" id="riskStats"></div>
+            <div class="risk-summary-text" id="riskSummaryText"></div>
+          </div>
+
+          <!-- B. 高优先级风险 -->
+          <div class="card card-priority-risks">
+            <h2 class="card-title">高优先级风险</h2>
+            <div class="priority-risks-list" id="priorityRisks"></div>
+          </div>
+
+          <!-- C. 改造建议 -->
+          <div class="card card-suggestions">
+            <h2 class="card-title">改造建议</h2>
+            <div class="suggestion-grid" id="suggestionGrid"></div>
+          </div>
+
+          <!-- 效果图 -->
+          <div class="card card-images" id="cardImages">
+            <h2 class="card-title">改造效果图</h2>
+            <div class="result-images" id="resultImages"></div>
+          </div>
+
+          <!-- D. 详细分析（折叠） -->
+          <div class="card card-detail">
+            <button class="collapse-header" id="collapseDetail">
+              <span>查看详细分析</span>
+              <svg class="collapse-chevron" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M7.4 8.6L12 13.2l4.6-4.6L18 10l-6 6-6-6z"/></svg>
+            </button>
+            <div class="collapse-body hidden" id="detailBody"></div>
+          </div>
+
+          <!-- E. 下一步操作 -->
+          <div class="card card-actions">
+            <h2 class="card-title">下一步</h2>
+            <div class="action-buttons">
+              <button class="btn-action" id="btnRegenerate">生成改造效果图</button>
+              <button class="btn-action secondary" id="btnExport">导出改造报告</button>
+              <button class="btn-action secondary" id="btnChecklist">生成采购清单</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 错误提示 -->
+    <div class="toast hidden" id="toast"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
